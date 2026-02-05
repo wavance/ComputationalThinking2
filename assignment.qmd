@@ -230,7 +230,7 @@ for (i in 1:length(vec)) {
   if (vec[i] < 0) {
     # if the element is less than 0
     print("value is less than 0")
-  } else {f
+  } else {
     # if the element is exactly equal to 0
     if (vec[i] == 0) {
       # if the element equals 10
@@ -271,11 +271,15 @@ Also, these study sites are very close to where Calvin grew up :)
 
 Navigate to the help page of this dataset and read up on the dataset. In a couple sentences, describe how the researchers measured pika stress, including how they did it, what the "stress" variable is called, and what the units are.
 
+### A1.3 data collected between jun-sept of 2018. stress measured by observing glucocorticoid metabolite present in pika feces. stress variable = concentration_pg_m, units = picogram GCM/gram dry pika feces
+
 ------------------------------------------------------------------------
 
 ### Q1.4: What does a row represent in this data?
 
 What does a row represent in this dataset? Is it an average value from a site? From a station? From an individual pika? From an individual pika poop? From a subsample of a pika poop?
+
+### A1.4 each row represents an data from a sample from an individual pika and its poop
 
 ------------------------------------------------------------------------
 
@@ -330,7 +334,14 @@ head(nwt_pikas_categ %>% select(-c(utm_easting, utm_northing)))
 Remake our scatterplot from above, but this time color the points by the new category we just made.
 
 ```{r}
-
+# Make a scatterplot with jittered points
+nwt_pikas_categ %>% 
+  # We're adding a little placeholder axis just so we can see the point distribution
+  ggplot(aes(x ="Placeholder", 
+             y = concentration_pg_g)) +
+  # Add the geom_jitter geom and color it by stress_category
+  geom_jitter(width = 0.1,aes(color = stress_category)) 
+  
 ```
 
 Hopefully you can now visualize what that `case_when()` statement did with the information we gave it.
@@ -394,6 +405,14 @@ This is purposefully vague: it is your choice about what to do. Revisit both com
 
 ### Q2.1 What dataset are you using?
 
+#### A2.1 Palmerpenguins!
+
+```{r}
+library(palmerpenguins)
+# Read in the palmer penguins data
+penguins <- penguins
+```
+
 ------------------------------------------------------------------------
 
 ## For loop
@@ -402,11 +421,22 @@ This is purposefully vague: it is your choice about what to do. Revisit both com
 
 Before executing the for loop, write a couple sentences clearly describing what it is that you are trying to accomplish.
 
+#### A2.2 I want this loop to tell me the ratio of bill length to bill depth
+
 ------------------------------------------------------------------------
 
 ### Q2.3 Apply the for loop to this dataset
 
 Apply a for loop in some way to this dataset. Describe what you are doing in comments on each line.
+
+```{r}
+#creates a vector that is based on a for loop that iritates the amount of times there are rows in bill_length_mm
+bill.ratio <- for(i in 1:length(penguins$bill_length_mm)) {
+#printing each ratio as it comes along
+  print(penguins$bill_length_mm[i]/penguins$bill_depth_mm[i])
+  
+}
+```
 
 ------------------------------------------------------------------------
 
@@ -416,11 +446,29 @@ Apply a for loop in some way to this dataset. Describe what you are doing in com
 
 Before executing the if else or case_when, write a couple sentences clearly describing what it is that you are trying to accomplish.
 
+#### A2.4 I want to make a new column that qualitatively tell us how large the penguin is based on body mass
+
 ------------------------------------------------------------------------
 
 ### Q2.5 Apply an if else or case_when to this dataset
 
 Apply an if else or case_when in some way to this dataset. Describe what you are doing in comments on each line.
+
+```{r}
+penguins.size <- penguins %>% 
+  # Call the new column size
+  mutate(body_size = case_when(
+    # When the value is > x then it will output the different categories
+    body_mass_g > 5000 ~ "Very Large!!!!!!",
+    body_mass_g > 4000 ~ "Large",
+    body_mass_g > 2500 ~ "Medium",
+    body_mass_g > 0 ~ "Small",
+    # Otherwise, make the new column's value "NA"
+    .default = "NA"
+  ))
+
+head(penguins.size)
+```
 
 ------------------------------------------------------------------------
 
